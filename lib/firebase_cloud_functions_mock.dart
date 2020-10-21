@@ -7,11 +7,17 @@ import 'dart:convert';
 class MockCloudFunctions extends Mock implements CloudFunctions {
   Map<String, String> _jsonStore = <String, String>{};
 
-  void mockResult({String functionName, String json}){
+  String _convertMapToJson(Map<String, dynamic> parameters){
+    return json.encode(parameters);
+  }
+
+  void mockResult({String functionName, String json, Map<String, dynamic> parameters = const <String, dynamic>{}}){
+    functionName = parameters?.isNotEmpty ? functionName + _convertMapToJson(parameters) : functionName;
     _jsonStore[functionName] = json;
   }
 
-  String getMockResult(String functionName){
+  String getMockResult(String functionName, Map<String, dynamic> parameters){
+    functionName = parameters == null ? functionName : (parameters?.isNotEmpty ? functionName + _convertMapToJson(parameters) : functionName);
     assert(_jsonStore[functionName] != null, 'No mock result for ${functionName}');
     return _jsonStore[functionName];
   }
@@ -32,7 +38,7 @@ class HttpsCallableMock extends Mock implements HttpsCallable {
 
   @override
   Future<HttpsCallableResult> call([dynamic parameters]) {
-    return Future.value(HttpsCallableResultMock._(json.decode(_cloudFunctions.getMockResult(_functionName))));
+    return Future.value(HttpsCallableResultMock._(json.decode(_cloudFunctions.getMockResult(_functionName, parameters))));
   }
 
 

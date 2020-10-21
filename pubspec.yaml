@@ -1,8 +1,9 @@
 name: firebase_cloud_functions_mock
 description: Dart firebase cloud functioin mock for testing
-version: 0.0.1
+version: 0.0.2
 author:
-homepage:
+repository: https://github.com/technixo/firebase_cloud_functions_mock
+homepage: https://github.com/technixo/firebase_cloud_functions_mock
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
