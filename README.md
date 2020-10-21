@@ -4,6 +4,15 @@ Dart firebase cloud functioin mock for testing
 
 ## Getting Started
 
+
+# Install
+Add to `pubspec.yaml`
+```
+firebase_cloud_functions_mock:
+    git: git@github.com:technixo/firebase_cloud_functions_mock.git
+
+```
+
 -- USE
 
 ```
