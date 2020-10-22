@@ -11,12 +11,13 @@ class MockCloudFunctions extends Mock implements CloudFunctions {
     return json.encode(parameters);
   }
 
-  void mockResult({String functionName, String json, Map<String, dynamic> parameters = const <String, dynamic>{}}){
+  void mockResult({String functionName, String json, dynamic parameters}){
     functionName = parameters?.isNotEmpty ? functionName + _convertMapToJson(parameters) : functionName;
     _jsonStore[functionName] = json;
   }
 
-  String getMockResult(String functionName, Map<String, dynamic> parameters){
+  String getMockResult(String functionName, dynamic parameters){
+    parameters = Map<String, dynamic>.from(parameters);
     functionName = parameters == null ? functionName : (parameters?.isNotEmpty ? functionName + _convertMapToJson(parameters) : functionName);
     assert(_jsonStore[functionName] != null, 'No mock result for ${functionName}');
     return _jsonStore[functionName];
@@ -38,7 +39,8 @@ class HttpsCallableMock extends Mock implements HttpsCallable {
 
   @override
   Future<HttpsCallableResult> call([dynamic parameters]) {
-    return Future.value(HttpsCallableResultMock._(json.decode(_cloudFunctions.getMockResult(_functionName, parameters))));
+    final decoded = json.decode(_cloudFunctions.getMockResult(_functionName, parameters));
+    return Future.value(HttpsCallableResultMock._(decoded));
   }
 
 
@@ -48,7 +50,7 @@ class HttpsCallableMock extends Mock implements HttpsCallable {
 }
 
 class HttpsCallableResultMock extends Mock implements HttpsCallableResult{
-  HttpsCallableResultMock._(Map<String, dynamic> _data):
+  HttpsCallableResultMock._(dynamic _data):
         data = _data;
 
   /// Returns the data that was returned from the Callable HTTPS trigger.
